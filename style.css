@@ -15,7 +15,9 @@
 html {
     scroll-behavior: smooth;
 }
-
+head {
+   <link rel="stylesheet" href="style.css">
+   }
 body {
     font-family: "Montserrat", sans-serif;
     background: #f5f1e9;
