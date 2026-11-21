@@ -72,52 +72,58 @@ window.addEventListener("scroll", function () {
 const contactForm = document.getElementById("contactForm");
 const formMessage = document.getElementById("formMessage");
 
-
-contactForm.addEventListener("submit", function (event) {
+contactForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const phone = document.getElementById("phone").value;
-    const service = document.getElementById("service").value;
-    const message = document.getElementById("message").value;
+    const submitButton = contactForm.querySelector('button[type="submit"]');
 
+    submitButton.disabled = true;
+    submitButton.textContent = "Sending...";
 
-    if (
-        name.trim() === "" ||
-        phone.trim() === "" ||
-        message.trim() === ""
-    ) {
+    formMessage.textContent = "";
+
+    try {
+
+        const response = await fetch(contactForm.action, {
+            method: "POST",
+            body: new FormData(contactForm),
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (response.ok) {
+
+            formMessage.textContent =
+                "Thank you! Your inquiry has been sent successfully.";
+
+            formMessage.style.color = "#4caf50";
+
+            contactForm.reset();
+
+        } else {
+
+            formMessage.textContent =
+                "Unable to send your inquiry. Please try again.";
+
+            formMessage.style.color = "#e74c3c";
+
+        }
+
+    } catch (error) {
 
         formMessage.textContent =
-            "Please fill in all required fields.";
+            "Network error. Please check your internet and try again.";
 
-        return;
+        formMessage.style.color = "#e74c3c";
 
     }
 
-
-    formMessage.textContent =
-        "Thank you! Your inquiry has been prepared.";
-
-
-    /*
-       Later we can connect this form to:
-
-       WhatsApp
-       Email
-       Formspree
-       Google Forms
-       Your own backend
-
-       so the message actually reaches your father.
-    */
-
-
-    contactForm.reset();
+    submitButton.disabled = false;
+    submitButton.textContent = "Send Inquiry";
 
 });
-
 
 /* ================= SIMPLE IMAGE FALLBACK ================= */
 
