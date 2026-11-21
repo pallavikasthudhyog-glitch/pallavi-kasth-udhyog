@@ -548,78 +548,61 @@
 
     <!-- CONTACT FORM -->
 
-   <form
-    class="contact-form"
-    id="contactForm"
-    action="https://formspree.io/f/xppdjvqq"
-    method="POST">
+   
+<form class="contact-form" id="contactForm"
+      action="https://formspree.io/f/xppdjvqq"
+      method="POST">
 
-        <div class="form-row">
-
-            <div class="input-group">
-                <label>Your Name</label>
-
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="Enter your name"
-                    required>
-            </div>
-
-
-            <div class="input-group">
-                <label>Phone Number</label>
-
-                <input
-                    type="tel"
-                    id="phone"
-                    placeholder="98XXXXXXXX"
-                    required>
-            </div>
-
-        </div>
-
+    <div class="form-row">
 
         <div class="input-group">
-
-            <label>What are you looking for?</label>
-
-            <select id="service">
-
-                <option>Wardrobe</option>
-                <option>Bed</option>
-                <option>Dining Table</option>
-                <option>Sofa</option>
-                <option>Chair</option>
-                <option>Custom Furniture</option>
-                <option>Other</option>
-
-            </select>
-
+            <label>Your Name</label>
+            <input type="text" id="name" name="name"
+                   placeholder="Enter your name" required>
         </div>
-
 
         <div class="input-group">
-
-            <label>Message</label>
-
-            <textarea
-                id="message"
-                rows="5"
-                placeholder="Tell us what you need..."
-                required></textarea>
-
+            <label>Phone Number</label>
+            <input type="tel" id="phone" name="phone"
+                   placeholder="98XXXXXXXX" required>
         </div>
 
+    </div>
 
-        <button type="submit" class="btn primary-btn form-button">
-            Send Inquiry
-        </button>
+    <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="email" name="email"
+               placeholder="Enter your email (optional)">
+    </div>
 
-        <p id="formMessage" class="form-message"></p>
+    <div class="input-group">
+        <label>What are you looking for?</label>
+        <select id="service" name="service">
+            <option>Wardrobe</option>
+            <option>Bed</option>
+            <option>Dining Table</option>
+            <option>Sofa</option>
+            <option>Chair</option>
+            <option>Custom Furniture</option>
+            <option>Other</option>
+        </select>
+    </div>
 
-    </form>
+    <div class="input-group">
+        <label>Message</label>
+        <textarea id="message" name="message"
+                  rows="5"
+                  placeholder="Tell us your design, size, measurements, wood type, etc."
+                  required></textarea>
+    </div>
 
+    <button type="submit" class="btn primary-btn form-button">
+        Send Inquiry
+    </button>
+
+    <p id="formMessage" class="form-message"></p>
+
+</form>
 </section>
 
 
