@@ -1,140 +1,25 @@
-/* =========================================================
-   PALLAVI KASTH UDHYOG
-   WEBSITE JAVASCRIPT
-========================================================= */
-
-
-/* ================= MOBILE MENU ================= */
-
-const menuButton = document.getElementById("menuButton");
-const navMenu = document.getElementById("navMenu");
-
-menuButton.addEventListener("click", function () {
-
-    navMenu.classList.toggle("show");
-
-});
-
-
-/* Close mobile menu after clicking a link */
-
-const navLinks = document.querySelectorAll("#navMenu a");
-
-navLinks.forEach(function (link) {
-
-    link.addEventListener("click", function () {
-
-        navMenu.classList.remove("show");
-
-    });
-
-});
-
-
-/* ================= ACTIVE NAVIGATION ================= */
-
-const sections = document.querySelectorAll("section[id]");
-
-window.addEventListener("scroll", function () {
-
-    let current = "";
-
-    sections.forEach(function (section) {
-
-        const sectionTop = section.offsetTop - 150;
-
-        if (window.scrollY >= sectionTop) {
-
-            current = section.getAttribute("id");
-
-        }
-
-    });
-
-
-    navLinks.forEach(function (link) {
-
-        link.classList.remove("active");
-
-        if (link.getAttribute("href") === "#" + current) {
-
-            link.classList.add("active");
-
-        }
-
-    });
-
-});
-
-
-/* ================= CONTACT FORM ================= */
-
-const contactForm = document.getElementById("contactForm");
-const formMessage = document.getElementById("formMessage");
-
-contactForm.addEventListener("submit", async function (event) {
-
-    event.preventDefault();
-
-    const submitButton = contactForm.querySelector('button[type="submit"]');
-
-    submitButton.disabled = true;
-    submitButton.textContent = "Sending...";
-
-    formMessage.textContent = "";
-
-    try {
-
-        const response = await fetch(contactForm.action, {
-            method: "POST",
-            body: new FormData(contactForm),
-            headers: {
-                "Accept": "application/json"
-            }
-        });
-
-        if (response.ok) {
-
-            formMessage.textContent =
-                "Thank you! Your inquiry has been sent successfully.";
-
-            formMessage.style.color = "#4caf50";
-
-            contactForm.reset();
-
-        } else {
-
-            formMessage.textContent =
-                "Unable to send your inquiry. Please try again.";
-
-            formMessage.style.color = "#e74c3c";
-
-        }
-
-    } catch (error) {
-
-        formMessage.textContent =
-            "Network error. Please check your internet and try again.";
-
-        formMessage.style.color = "#e74c3c";
-
-    }
-
-    submitButton.disabled = false;
-    submitButton.textContent = "Send Inquiry";
-
-});
-
-/* ================= SIMPLE IMAGE FALLBACK ================= */
-
-document.querySelectorAll("img").forEach(function (image) {
-
-    image.addEventListener("error", function () {
-
-        this.style.backgroundColor = "#3a2619";
-
-        this.style.minHeight = "100px";
-
-    });
-
-});
+// Edit product names, prices, categories, and image filenames in this list.
+const PRODUCTS = [
+ {id:'chair-01',name:'Classic Wooden Chair',category:'Chairs',price:8500,image:'images/chair1.png',description:'Solid wooden frame with a comfortable seat.',tag:'Popular'},
+ {id:'chair-02',name:'Cushioned Dining Chair',category:'Chairs',price:10500,image:'images/chair2.png',description:'A warm wood finish with cushioned comfort.'},
+ {id:'sofa-01',name:'Wooden Sofa Set',category:'Sofas',price:65000,image:'images/sofa1.png',description:'Handcrafted seating for relaxed living.',tag:'Featured'},
+ {id:'bed-01',name:'Modern Wooden Bed',category:'Beds',price:48000,image:'images/bed1.png',description:'A sturdy bed frame with timeless styling.'},
+ {id:'wardrobe-01',name:'Three-door Wardrobe',category:'Wardrobes',price:72000,image:'images/wardrobe1.png',description:'Spacious storage with a clean wood look.'},
+ {id:'table-01',name:'Dining Table',category:'Dining',price:39000,image:'images/table1.png',description:'A welcoming table for family meals.'}
+];
+const ORDER_ENDPOINT='https://formspree.io/f/xppdjvqq';
+const currency=n=>'Rs. '+Number(n).toLocaleString('en-IN');
+let cart=JSON.parse(localStorage.getItem('pallaviCart')||'[]');let category='All';
+const productsEl=document.getElementById('products'),categoriesEl=document.getElementById('categories'),searchEl=document.getElementById('search'),sortEl=document.getElementById('sort');
+function save(){localStorage.setItem('pallaviCart',JSON.stringify(cart));renderCart();}
+function renderCategories(){const cats=['All',...new Set(PRODUCTS.map(p=>p.category))];categoriesEl.innerHTML=cats.map(c=>`<button class="category-btn ${c===category?'active':''}" data-category="${c}">${c}</button>`).join('');categoriesEl.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{category=b.dataset.category;renderCategories();renderProducts();}));}
+function renderProducts(){let list=PRODUCTS.filter(p=>(category==='All'||p.category===category)&&(`${p.name} ${p.category} ${p.description}`.toLowerCase().includes(searchEl.value.toLowerCase())));if(sortEl.value==='low')list.sort((a,b)=>a.price-b.price);if(sortEl.value==='high')list.sort((a,b)=>b.price-a.price);productsEl.innerHTML=list.length?list.map(p=>`<article class="product-card"><div class="product-image"><img loading="lazy" src="${p.image}" alt="${p.name}" onerror="this.style.opacity=0.08"><span class="tag">${p.tag||p.category}</span></div><div class="product-info"><span class="product-category">${p.category}</span><h3>${p.name}</h3><p class="product-desc">${p.description}</p><div class="price-row"><span class="price">${currency(p.price)}</span></div><div class="product-actions"><button class="add-btn" data-add="${p.id}">Add to cart</button><button class="buy-btn" data-buy="${p.id}">Buy now</button></div></div></article>`).join(''):'<p class="empty-state">No products match your search.</p>';productsEl.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>addToCart(b.dataset.add)));productsEl.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',()=>{addToCart(b.dataset.buy);openCart();}));}
+function addToCart(id){const p=PRODUCTS.find(x=>x.id===id);if(!p)return;const existing=cart.find(x=>x.id===id);if(existing)existing.qty++;else cart.push({id,qty:1});save();}
+function total(){return cart.reduce((s,item)=>s+(PRODUCTS.find(p=>p.id===item.id)?.price||0)*item.qty,0)}
+function renderCart(){document.getElementById('cartCount').textContent=cart.reduce((s,i)=>s+i.qty,0);document.getElementById('subtotal').textContent=currency(total());const el=document.getElementById('cartItems');if(!cart.length){el.innerHTML='<div class="empty-state">Your cart is empty.<br>Add furniture to get started.</div>';return;}el.innerHTML=cart.map(item=>{const p=PRODUCTS.find(x=>x.id===item.id);if(!p)return'';return `<div class="cart-item"><img src="${p.image}" alt="${p.name}" onerror="this.style.opacity=.1"><div><h4>${p.name}</h4><p>${currency(p.price)} each</p><div class="quantity-controls"><button data-minus="${p.id}" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-plus="${p.id}" aria-label="Increase quantity">+</button></div><button class="remove-btn" data-remove="${p.id}">Remove</button></div><strong>${currency(p.price*item.qty)}</strong></div>`}).join('');el.querySelectorAll('[data-plus]').forEach(b=>b.onclick=()=>{cart.find(x=>x.id===b.dataset.plus).qty++;save()});el.querySelectorAll('[data-minus]').forEach(b=>b.onclick=()=>{const i=cart.find(x=>x.id===b.dataset.minus);i.qty--;if(i.qty<1)cart=cart.filter(x=>x.id!==i.id);save()});el.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{cart=cart.filter(x=>x.id!==b.dataset.remove);save()});}
+function openCart(){document.getElementById('overlay').classList.add('show');document.getElementById('cartDrawer').classList.add('open');}function closeCart(){document.getElementById('overlay').classList.remove('show');document.getElementById('cartDrawer').classList.remove('open');}
+function openCheckout(){if(!cart.length){alert('Your cart is empty. Please add a product first.');return;}closeCart();document.getElementById('orderItems').value=cart.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return `${p.name} x ${i.qty} — ${currency(p.price*i.qty)}`}).join('\n');document.getElementById('orderTotal').value=currency(total());document.getElementById('checkoutSubtotal').textContent=currency(total());document.getElementById('overlay').classList.add('show');document.getElementById('checkoutModal').classList.add('open');}
+function closeCheckout(){document.getElementById('checkoutModal').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+document.getElementById('cartOpen').onclick=openCart;document.getElementById('cartClose').onclick=closeCart;document.getElementById('checkoutClose').onclick=closeCheckout;document.getElementById('overlay').onclick=()=>{closeCart();closeCheckout()};document.getElementById('checkoutBtn').onclick=openCheckout;searchEl.addEventListener('input',renderProducts);sortEl.addEventListener('change',renderProducts);document.getElementById('year').textContent=new Date().getFullYear();
+document.getElementById('checkoutForm').addEventListener('submit',async e=>{e.preventDefault();const btn=document.getElementById('submitOrder'),msg=document.getElementById('checkoutMessage');btn.disabled=true;btn.textContent='Sending order…';msg.textContent='';try{const response=await fetch(ORDER_ENDPOINT,{method:'POST',body:new FormData(e.target),headers:{Accept:'application/json'}});if(response.ok){msg.textContent='Order request sent! We will contact you to confirm.';msg.style.color='green';cart=[];save();e.target.reset();}else{msg.textContent='Could not submit order. Please try again or contact us via WhatsApp.';msg.style.color='crimson';}}catch(err){msg.textContent='Network error. Check your connection and retry.';msg.style.color='crimson';}finally{btn.disabled=false;btn.textContent='Send order request';}});
+renderCategories();renderProducts();renderCart();
