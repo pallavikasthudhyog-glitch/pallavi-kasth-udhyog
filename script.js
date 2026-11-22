@@ -1,8 +1,6 @@
 // Edit product names, prices, categories, and image filenames in this list.
 const PRODUCTS = [
  {id:'chair-01',name:'Classic Wooden Chair',category:'Chairs',price:8500,image:'images/chair1.png',description:'Solid wooden frame with a comfortable seat.',tag:'Popular'},
- {id:'chair-02',name:'Cushioned Dining Chair',category:'Chairs',price:10500,image:'images/chair2.png',description:'A warm wood finish with cushioned comfort.'},
- {id:'sofa-01',name:'Wooden Sofa Set',category:'Sofas',price:65000,image:'images/sofa1.png',description:'Handcrafted seating for relaxed living.',tag:'Featured'},
  {id:'bed-01',name:'Modern Wooden Bed',category:'Beds',price:48000,image:'images/bed1.png',description:'A sturdy bed frame with timeless styling.'},
  {id:'wardrobe-01',name:'Three-door Wardrobe',category:'Wardrobes',price:72000,image:'images/wardrobe1.png',description:'Spacious storage with a clean wood look.'},
  {id:'table-01',name:'Dining Table',category:'Dining',price:39000,image:'images/table1.png',description:'A welcoming table for family meals.'}
